@@ -1,0 +1,14 @@
+torch
+transformers
+sentence-transformers
+datasets
+faiss-cpu
+rank-bm25
+scikit-learn
+matplotlib
+numpy
+pandas
+safetensors
+jupyter
+nbformat
+nbconvert
