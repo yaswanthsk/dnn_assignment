@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 
 import numpy as np
 import pandas as pd
+import requests
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -27,8 +28,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "data", "telco_churn.csv")
 ARTIFACT_DIR = os.path.join(BASE_DIR, "artifacts")
 STATUS_PATH = os.path.join(BASE_DIR, "latest_status.json")
+DATASET_URL = "https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv"
 
 os.makedirs(ARTIFACT_DIR, exist_ok=True)
+os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
 
 
 # ---------------------------------------------------------------------------
@@ -38,6 +41,13 @@ os.makedirs(ARTIFACT_DIR, exist_ok=True)
 @task
 def load_data():
     logger = get_run_logger()
+    if not os.path.exists(DATA_PATH):
+        logger.info(f"Dataset not found locally, downloading from {DATASET_URL}")
+        response = requests.get(DATASET_URL, timeout=30)
+        response.raise_for_status()
+        with open(DATA_PATH, "wb") as f:
+            f.write(response.content)
+        logger.info("Dataset downloaded successfully")
     logger.info(f"Ingesting dataset from {DATA_PATH}")
     df = pd.read_csv(DATA_PATH)
     logger.info(f"Loaded dataset with shape {df.shape}")
