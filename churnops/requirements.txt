@@ -6,3 +6,4 @@ seaborn>=0.13.0
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
 prefect>=2.19.0
+requests>=2.31.0
